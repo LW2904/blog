@@ -1,5 +1,6 @@
 baseURL = "https://lw2904.github.io/"
 languageCode = "en-us"
 title = "blog"
-theme = "pixyll"
 author = "lw"
+contentdir = "content"
+publishdir = "public"

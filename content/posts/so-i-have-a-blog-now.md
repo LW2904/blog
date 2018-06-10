@@ -1,8 +1,8 @@
 ---
-draft: false
 title: "So I Have a Blog Now"
+date: 2018-06-10T20:39:58+02:00
+draft: true
 ---
-
 
 I figure since this is my first post I'll both outline what I want this blog to be, and how I made it.
 
