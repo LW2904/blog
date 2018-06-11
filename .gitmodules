@@ -1,6 +1,3 @@
-[submodule "themes/pixyll"]
-	path = themes/pixyll
-	url = https://github.com/azmelanar/hugo-theme-pixyll.git
 [submodule "public"]
 	path = public
 	url = git@github.com:lw2904/lw2904.github.io.git
