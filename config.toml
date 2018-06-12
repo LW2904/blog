@@ -1,11 +1,11 @@
-baseURL = "https://lw2904.github.io/"
 languageCode = "en-us"
 title = "lw's blog"
 author = "lw"
 contentdir = "content"
 publishdir = "public"
-
-theme = "one"
+theme = "pixyll"
+disqusShortname = "lw2904"
+baseURL = "https://lw2904.github.io/"
 
 [params]
-    navigation = ["about.md"]
+  navigation = ["archives.md", "about.md"]

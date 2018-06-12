@@ -2,3 +2,6 @@
 	path = public
 	url = git@github.com:lw2904/lw2904.github.io.git
 	branch = master
+[submodule "themes/slim"]
+	path = themes/slim
+	url = https://github.com/zhe/hugo-theme-slim.git
