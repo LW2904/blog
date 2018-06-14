@@ -1,5 +1,6 @@
 ---
 title: "Building a Brainfuck Interpreter"
+date: 2018-06-14T18:30:58+02:00
 draft: false
 ---
 
