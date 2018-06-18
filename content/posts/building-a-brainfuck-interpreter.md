@@ -1,6 +1,6 @@
 ---
 title: "Building a Brainfuck Interpreter"
-date: 2018-06-14T18:30:58+02:00
+date: 2018-06-14T19:07:08+02:00
 draft: false
 ---
 
@@ -8,7 +8,7 @@ draft: false
 >
 >From the [Wikipedia Article](https://en.wikipedia.org/wiki/Brainfuck) on brainfuck
 
-Created only for amusement and as a challenge to its creator (namely to implement the smallest possible compiler), both creating compilers and interpreters for it and writing actual programs in it are an interesting and enjoyable exercise even now.
+Created only for amusement and as a challenge to its creator (namely to implement the smallest possible compiler), both creating compilers and interpreters for, and writing actual programs in it, are an interesting and enjoyable exercise even now.
 
 The former will be the focus here, for I’ve been toying around with implementing both an interpreter (written in C) and a brainfuck to C compiler (also in C). For someone who is just starting out on the journey of learning C these were formidable challenges, and I hope to be able to share some of the insights gained from them.
 
@@ -24,10 +24,9 @@ int main(int argc, char **argv)
 	int cls[MAX_LENGTH];	// Cells.
 	int ins[MAX_LENGTH];	// Instructions.
 
-	int ilen = 0;			// Number of instructions.
+	int ilen = 0;           // Number of instructions.
     
 	// Pointers to currently active cell and instruction, respectively.
-	// *ptr = cls is äquivalent to *ptr = &cls[0]
 	int *ptr = cls;
 	int *iptr = ins;
 	
@@ -35,7 +34,7 @@ int main(int argc, char **argv)
 }
 ```
 
-These are almost all the variables we’ll need, but it doesn‘t really reveal anything on program structure until now. Before getting to that we’ll need to get reading the brainfuck code to interpret out of the way, so let’s expand what we have so far with some file reading logic.
+These are almost all the variables we’ll need, but it doesn‘t really reveal any of the program structure just yet. Before getting to that we’ll have to get the reading of the brainfuck code to interpret out of the way, so let’s expand what we have so far with some file streaming and reading logic.
 
 ```C
 int main(int argc, char **argv)
@@ -76,8 +75,7 @@ int main(int argc, char **argv)
 	/* ... */
     
     // Initialize all cells to zero.
-	for (int i = 0; i < MAX_LENGTH; i++)
-		cls[i] = 0;
+	memset(cls, 0, MAX_LENGTH)
     
     // While iptr points to a character in ins, handle the char. 
     while ((iptr - ins) < ilen) {

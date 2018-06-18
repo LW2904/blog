@@ -1,7 +1,13 @@
+[submodule "themes/slim"]
+	path = themes/slim
+	url = https://github.com/zhe/hugo-theme-slim.git
 [submodule "public"]
 	path = public
 	url = git@github.com:lw2904/lw2904.github.io.git
 	branch = master
-[submodule "themes/slim"]
-	path = themes/slim
-	url = https://github.com/zhe/hugo-theme-slim.git
+[submodule "themes/pixyll"]
+	path = themes/pixyll
+	url = https://github.com/azmelanar/hugo-theme-pixyll.git
+[submodule "themes/one"]
+	path = themes/one
+	url = https://github.com/resugary/hugo-theme-one.git
