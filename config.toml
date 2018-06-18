@@ -3,7 +3,7 @@ title = "lw's blog"
 author = "lw"
 contentdir = "content"
 publishdir = "public"
-theme = "pixyll"
+theme = "one"
 disqusShortname = "lw2904"
 baseURL = "https://lw2904.github.io/"
 
