@@ -75,7 +75,7 @@ int main(int argc, char **argv)
 	/* ... */
     
     // Initialize all cells to zero.
-	memset(cls, 0, MAX_LENGTH)
+	memset(cls, 0, MAX_LENGTH);
     
     // While iptr points to a character in ins, handle the char. 
     while ((iptr - ins) < ilen) {
