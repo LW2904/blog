@@ -3,9 +3,15 @@ title = "lw's blog"
 author = "lw"
 contentdir = "content"
 publishdir = "public"
-theme = "one"
+theme = "slim"
 disqusShortname = "lw2904"
-baseURL = "https://lw2904.github.io/"
+baseURL = "http://localhost:1313"
 
 [params]
-  navigation = ["archives.md", "about.md"]
+  Subtitle = ""
+  GithubID = "lw2904"
+  DisqusShortname = ""
+  Summary = true  # takes true or false
+  Content = false  # takes true or false
+  # if both are set to true, summary is shown.
+  FooterMsg = " "
