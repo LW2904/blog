@@ -1,6 +1,6 @@
 ---
-title: Cheating in osu!mania
-date: 2018-07-15T120:52:00+02:00
+title: "Cheating in osu!mania"
+date: 2018-07-15T20:52:00+02:00
 draft: false
 ---
 
