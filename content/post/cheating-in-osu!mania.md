@@ -4,25 +4,36 @@ date: 2018-07-15T20:52:00+02:00
 draft: false
 ---
 
-I’ve been dabbling in memory reading on Linux recently, and I’ve also been playing around with a fun little application called [scanmem](https://github.com/scanmem/scanmem) which can be used to isolate the address of a variable in a process.
+I’ve been dabbling in memory reading on Linux recently, and I’ve also been having fun with a little application called [scanmem](https://github.com/scanmem/scanmem) which can be used to isolate the address of a variable in a process.
 
 And coincidence has it that I’ve also started playing the game [osu!mania](https://osu.ppy.sh/) somewhat actively in the last few weeks. Well, one thing led to another and now we are here.
 
-Essentially, what we are going to is parsing a beatmap file (the `.osu` files in your osu! `Songs` path) and then ‘replaying’ the hits as they come up. By parsing hits from the `.osu` file we avoid having to do too much memory reading or (god forbid) reading the screens’ pixels.
+Essentially, what we are going to be doing can be divided into two stages:
 
-It should be noted that we will be using APIs that are specific to Linux and the X Window System in order to read the little memory we have to, and to simulate keypresses. The parts that require this are easily replaceable with close Windows equivalents, and no changes to the main program logic are required.
+- Parse a beatmap file (the `.osu` files in your `.../osu!/Songs/` path) and get the hitpoints described in it.
+- Read the current songs playing time from the game process’ memory and determine which hitpoints are “due”.
+
+By parsing hits from the `.osu` file we avoid having to do too much memory reading or (god forbid) reading the screens’ pixels.
+
+It should be noted that I will be using APIs that are specific to Linux and the X Window System in order to read the little memory we have to, and to simulate keypresses. The parts that require this are easily replaceable with close Windows equivalents, and no changes to the main program logic are required.
 
 ### Parsing the beatmap
 
-Information about beatmaps is stored in plaintext in `.osu` files, and the format is [well documented]("https://osu.ppy.sh/help/wiki/osu!_File_Formats/Osu_(file_format)"). These files contain many sections of which only the last `[HitObjects]` section is relevant to us.
+Information about beatmaps is stored in plaintext in `.osu` files, and the format is [well documented]("https://osu.ppy.sh/help/wiki/osu!_File_Formats/Osu_(file_format)"). These files contain many sections, of which only the last `[HitObjects]` section is relevant to us.
 
 The Hit Objects section is made up of CSV lines with a syntax like this: 
 
 ```
-x,y,time,type,hitSound,[endTime],extras
+x, y, time, type, hitSound, [endTime], extras
 ```
 
-Of these values we only need `X ` to determine the button to press, `time` to determine when to press the button and `endTime` to determine when to release the button. `endTime` will be zero if this is a simple hit object, ergo if it’s not a Hold Note, so in our implementation we will simply set it to `time + TAPTIME` where `TAPTIME` is something like 15 if `!endTime`.
+Of these values we only need
+
+-  `x ` to determine the column this point falls in, 
+- `time` to determine when to press the button and
+-  `endTime` to determine when to release the button.
+
+Do note that `endTime` will be zero if this is a simple hit object, ergo if it’s not a Hold Note. In our implementation, if `!endtime`, we will simply set it to `time + TAPTIME` where `TAPTIME` is something like 15.
 
 A `hitpoint` struct containing only the requires values could look like this:
 
@@ -34,7 +45,7 @@ struct hitpoint {
 };
 ```
 
-These beatmaps are sorted by `time`, but their `endTime`s can be all over the place, so we’ll parse them into objects which we can properly sort and then execute one by one as they are due. For this I made a very simple `action` struct, which looks like this:
+These beatmaps are sorted by `time`, but their `endTime`s can be all over the place, so we’ll parse them into objects which we can properly sort and then execute one by one as they are due. For this we’ll build an action struct which will represent either keydown or keyup:
 
 ```C
 struct action {
@@ -65,11 +76,13 @@ which can be parsed into two actions.
 
 _For readability I’ve borrowed from the JSON syntax here._
 
-To understand why the key property is set to `'d'`, consider:
+An important calculation to consider in the CSV to `hitpoint` conversion is that of the `column` property. We know that `x` determines the column, and the documentation provides us with the following formula:
 
 `column = X / column width` _where_ `column width = 512 / number of columns`
 
-Since we’re only going to support maps with four columns this can be shortened to `column = 64 / 128 ` which, rounded down, is zero - ergo the first column, which is assigned the key `'d'` by default.
+Since we’re only going to support maps with four columns (aka keys) this can be shortened to `column = 64 / 128 ` which, when discarding decimal places, is zero.
+
+The default key layout in osu!mania is `'d'` for the first column, `'f'` for the second, `'j'` for the third and `'k'` for the fourth and last. Therefore the first colum (with index zero) gets converted to a `'d'` when parsing the `hitpoint` struct into `action`s.
 
 I’m not going to go into map parsing any further than this since in the end it’s really just splitting up and parsing lines, but you can take a look at the code in [beatmap.c](https://github.com/LW2904/maniac/blob/master/src/beatmap.c) where it’s fully implemented.
 
@@ -79,23 +92,29 @@ All time points in .osu files are defined as ‘miliseconds from the beginning o
 
 In order to do this we will have to find the address of that particular variable in the game’s memory, which we can very conveniently do using the _scanmem_ tool.
 
-Make you sure you have stopped the current songs playback time and simply search for `0` in scanmem, after having provided the osu! process’ PID. 
+While having osu! opened and with the current song’s playback stopped, start scanmem like so:
+
+```bash
+$ scanmem -p <PID of osu! process>
+```
+
+Having started scanmem and after beeing greeted with the default License and Warranty information, simply input zero and wait for the search to complete.
 
 ![](https://i.imgur.com/V2VrCaB.png)
 
 _The result of searching for zero, note the stopped playback. Don’t mind wine’s messages in the background, they don’t bite._
 
-Now, start the playback and, in scanmem keep inputting `>` (indicating that the value we are searching for has increased since the last search) until you are left with a reasonable amount of matches.
+Now, start the playback and, in scanmem keep inputting `>` (indicating that the value we are searching for has increased since the last search) until you are left with a reasonable amount of matches. Other commands that can be used to narrow down the list include `<` and `=`. Go wild until you reach a number you are comfortable with, don’t forget to check the current list of matches using the `list` command.
 
 ![](https://i.imgur.com/osRrpHY.png)
 
 A lot of these can be discarded immediately, and the addresses with potential can be quickly narrowed down to those at the indices 1, 3, 6, 30, 37 and 41. After a second look, 1-6 can be discarded since `I16` has a maximum size of `2^16 = 65536` which is much too small to hold an average song’s playtime. Of the rest we are going to pick 30 (`0x36e59ec`) since it has the largest range.
 
-I’m not going to implement pattern scanning here since it is not required on Linux and I feel like it would go too far beyond the scope of this post.
+I’m not going to implement pattern scanning here since it is not required on Linux and I feel like it would go too far beyond the scope of this post, reference implementations can be found all over the web though. To get the surrounding memory for a signature simply use the `dump` command.
 
 ### Reading the gametime
 
-Now, having found the address we want to read from, we can simply use the [`process_vm_readv`](http://man7.org/linux/man-pages/man2/process_vm_readv.2.html) function introduced in recent Linux Kernel versions (>= 3.2). I want to encourage you to read the manpage on it, although its interface should become obvious from the example code below.
+Now, having found the address we want to read from, we can simply use the [`process_vm_readv`](http://man7.org/linux/man-pages/man2/process_vm_readv.2.html) function introduced in recent Linux Kernel versions (>= 3.2). I want to encourage you to read the manpage on it, although its interface should be obvious from the example code below.
 
 ```c
 #define TIME_ADDRESS 0x36e59ec
@@ -143,6 +162,12 @@ int main(int argc, char *argv[])
 		}
 	}
     
+    if (!game_proc_id || !map) {
+		printf("usage: %s -p <pid of osu! process> ", argv[0]);
+		printf("-m <path to beatmap.osu>\n");
+		return EXIT_FAILURE;
+	}
+    
     /* ... */
 }
 ```
@@ -181,15 +206,9 @@ int main(int argc, char **argv)
 {
 	/* ... */
 
-	if (!game_proc_id || !map) {
-		printf("usage: %s -p <pid of osu! process> ", argv[0]);
-		printf("-m <path to beatmap.osu>\n");
-		return EXIT_FAILURE;
-	}
-
 	hitpoint *points;
 	int num_points = 0;
-	if ((num_points = parse_beatmap((char *)map, &points)) == 0 || !points) {
+	if ((num_points = parse_beatmap(map, &points)) == 0 || !points) {
 		printf("failed to parse beatmap (%s)\n", map);
 		return EXIT_FAILURE;
 	}
@@ -245,3 +264,4 @@ int main()
 	return 0;
 }
 ```
+The full code of this project can be found on [github.com/lw2904/maniac](https://github.com/lw2904/maniac), note that the code is not a one on one match to the examples in this post since parts were refactored in order to reach Windows portability.
