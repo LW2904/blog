@@ -265,3 +265,9 @@ int main()
 }
 ```
 The full code of this project can be found on [github.com/lw2904/maniac](https://github.com/lw2904/maniac), note that the code is not a one on one match to the examples in this post since parts were refactored in order to reach Windows portability.
+
+
+
+>Edit history
+>
+>__7/17/2018__: Rewrote and restructured parts for better readability, fixed minor error in code sample, added bottom note. Changes in commit [`962fb1f`](https://github.com/LW2904/blog/commit/962fb1f584a3c3d1c85ca063f92dc75c1725961e).
