@@ -18,7 +18,7 @@ I use both a Windows PC, and a Laptop running Linux to work on, so I went throug
 
 On Windows, you will want to download the appropriate .zip archive from the [Hugo Releases](https://github.com/gohugoio/hugo/releases), extracting the contained executable to a location that is convenient for you. Ideally you would move it somewhere in your `PATH` for convenience, on Windows that would be `C:\Program Files (x86)\` by default.
 
-For users of Debian (or a derivate like Ubuntu) a .deb package is provided on the [Hugo Releases](https://github.com/gohugoio/hugo/releases) page, which you can simply download and install using
+For users of Debian (or a derivate like Ubuntu) a .deb package is provided on the [Hugo Releases](https://github.com/gohugoio/hugo/releases) page, which, after downloading, can be installed with the following command
 
 ```bash
 $ sudo dpkg -i hugo_*.deb
@@ -47,14 +47,18 @@ $ git clone git@github.com:<USERNAME>/blog.git
 $ git clone git@github.com:<USERNAME>/<USERNAME>.github.io.git
 ```
 
-Now, since Hugo does not ship with a default theme, we'll have to choose one from the [available themes](https://themes.gohugo.io/). The one that is being used in this blog is simply called [one](https://themes.gohugo.io/hugo-theme-one/), and we will be using it in this example as well.
+Now, since Hugo does not ship with a default theme, we'll have to choose one from the [available themes](https://themes.gohugo.io/). The one that is being used in this blog is simply called [slim](https://themes.gohugo.io/slim/), and we will be using it in this example as well.
 
 ```bash
 $ cd blog
-$ git submodule add https://github.com/resugary/hugo-theme-one.git themes/one
+$ git submodule add https://github.com/zhe/hugo-theme-slim.git themes/slim
 ```
 
-Additionally, we'll want to add out `<USERNAME>.github.io.git` repository as a submodule in the `public/` directory. Hugo will build the site from the content and source files in the `blog` repository, to the `public` directory - which has our GitHub pages repository as its remote origin.
+Additionally, we'll want to add our `<USERNAME>.github.io.git` repository as a submodule in the `public/` directory. Hugo will build the site from the content and source files in the `blog` repository, to the `public` directory - which has our GitHub pages repository as its remote origin.
+
+```bash
+$ git submodule add https://github.com/<USERNAME>/<USERNAME>.github.io.git
+```
 
 The [Hugo docs](https://gohugo.io/documentation/) provide a great script, automating some steps of pushing a new version of the blog to GitHub pages, it is copied in full here: 
 
@@ -66,7 +70,7 @@ The [Hugo docs](https://gohugo.io/documentation/) provide a great script, automa
 echo -e "\033[0;32mDeploying updates to GitHub...\033[0m"
 
 # Build the project.
-hugo # if using a theme, replace with `hugo -t <YOURTHEME>`
+hugo -t slim # if using a theme, replace with `hugo -t <YOURTHEME>`
 
 # Go To Public folder
 cd public
@@ -89,8 +93,8 @@ cd ..
 
 Make it executable, and run it:
 
-```
-$ chmod +X deploy.sh
+```bash
+$ sudo chmod +X deploy.sh
 $ ./deploy.sh  "Optional commit message."
 ```
 
@@ -99,8 +103,8 @@ $ ./deploy.sh  "Optional commit message."
 My workflow when writing a new post is rather simple, and as follows:
 
 ```bash
-$ hugo new content/posts/new-post.md
-$ vim content/posts/new-post.md
+$ hugo new content/post/new-post.md
+$ vim content/post/new-post.md
 ```
 
 This newly created file will have some default [Front Matter](https://gohugo.io/content-management/front-matter/#readout) added, which will look something like this:
@@ -113,4 +117,4 @@ draft: true
 ---
 ```
 
-Note how the title is read from the filename, and automatically capitalized to follow the MLA style for headlines.
+Note how the title is read from the filename, and automatically capitalized to follow the MLA style of capitalization for headlines.
