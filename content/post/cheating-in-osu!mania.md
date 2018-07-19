@@ -19,7 +19,7 @@ It should be noted that I will be using APIs that are specific to Linux and the 
 
 ### Parsing the beatmap
 
-Information about beatmaps is stored in plaintext in `.osu` files, and the format is [well documented]("https://osu.ppy.sh/help/wiki/osu!_File_Formats/Osu_(file_format)"). These files contain many sections, of which only the last `[HitObjects]` section is relevant to us.
+Information about beatmaps is stored in plaintext in `.osu` files, and the format is [well documented](https://osu.ppy.sh/help/wiki/osu!_File_Formats/Osu_(file_format)). These files contain many sections, of which only the last `[HitObjects]` section is relevant to us.
 
 The Hit Objects section is made up of CSV lines with a syntax like this: 
 
