@@ -37,7 +37,7 @@ Having these control codes strewn about in code can only be considered a bad pra
 
 One such abstraction, which will come in very handy in the next few examples, could be called `move_cursor()`.
 
-```C
+```c
 void move_cursor(int x, int y)
 {
 	printf("%c[%d;%dH", ASCII_ESC, y, x);
@@ -48,7 +48,7 @@ The control code to move the cursor naturally has to accept arguments in the for
 
 In combination with basic stdio functions we can do a great many things with `move_cursor()`. For example, drawing a line could be done with the following function.
 
-```C
+```c
 void draw_line(int slope, int width)
 {
 	for (int i = 0; i < width; i++) {
