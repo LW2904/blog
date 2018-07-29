@@ -1,7 +1,7 @@
 ---
 title: "Terminal Control Codes in C"
 date: 2018-07-26T23:25:45+02:00
-draft: true
+draft: false
 ---
 
 Many terminals (and terminal emulators) support color and cursor control through a system of escape sequences. A commonly supported and used standard is often referred to as "ANSI Colour", on which the VT100 terminal specification which we will be using is based.
