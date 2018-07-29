@@ -4,7 +4,6 @@ author = "lw"
 contentdir = "content"
 publishdir = "public"
 theme = "slim"
-disqusShortname = "lw2904"
 baseURL = "https://lw2904.github.io/"
 
 [params]
